@@ -11,6 +11,8 @@ module.exports = {
     ],
     "rules": {
         'indent': ['error', 4, { "SwitchCase": 1 }],
+        'prefer-promise-reject-errors': 'off',
+        "arrow-body-style": ["warn", "as-needed"],
         'import/no-extraneous-dependencies': ['error', {
             devDependencies: [
                 'test/**', // tape, common npm pattern
