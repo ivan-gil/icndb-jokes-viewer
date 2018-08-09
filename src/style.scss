@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+$font-main: Roboto, Helvetica, sans-serif;
+
+html {
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
+#app {
+    display:flex;
+    flex-direction:column;
+    min-height: 100vh;
+}
