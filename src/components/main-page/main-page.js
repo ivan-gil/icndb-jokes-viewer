@@ -3,18 +3,18 @@ import PropTypes from 'prop-types';
 
 // Material UI components
 import { withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Modal from '@material-ui/core/Modal';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Icon from '@material-ui/core/Icon';
-import Typography from '@material-ui/core/Typography';
 
 // Components
 import Joke from '../joke/joke';
+import SettingsModal from '../settings-modal/settings-modal';
 
 // Services
 import JokeService from '../../services/icndb-service';
+
+// Helpers
+import storageAvailable from '../../helpers/common-helpers';
 
 const styles = theme => ({
     root: {
@@ -43,12 +43,20 @@ const styles = theme => ({
 class MainPage extends React.Component {
     constructor(props) {
         super(props);
+        let firstName;
+        let lastName;
+
+        if (storageAvailable('localStorage')) {
+            firstName = localStorage.getItem('firstName');
+            lastName = localStorage.getItem('lastName');
+        }
+
         this.state = {
             open: false,
             joke: '',
             loadingJoke: true,
-            firstName: 'Chuck',
-            lastName: 'Norris',
+            firstName: firstName || 'Chuck',
+            lastName: lastName || 'Norris',
         };
     }
 
@@ -61,12 +69,21 @@ class MainPage extends React.Component {
             }));
     }
 
-    handleOpen() {
+    openModal() {
         this.setState({ open: true });
     }
 
-    handleClose() {
+    closeModal() {
         this.setState({ open: false });
+    }
+
+    submitModalData(props) {
+        if (storageAvailable('localStorage')) {
+            localStorage.setItem('firstName', props.firstName);
+            localStorage.setItem('lastName', props.lastName);
+        }
+
+        this.setState(props);
     }
 
     render() {
@@ -75,25 +92,15 @@ class MainPage extends React.Component {
 
         return (
             <div className={classes.root}>
-                <IconButton className={classes.settingsBtn} onClick={() => this.handleOpen()}>
+                <IconButton className={classes.settingsBtn} onClick={() => this.openModal()}>
                     <Icon className={classes.icon}>settings</Icon>
                 </IconButton>
                 <Joke text={joke} loading={loadingJoke} />
-                <Modal
+                <SettingsModal
                     open={open}
-                    onClose={() => this.handleClose()}
-                >
-                    <div className={classes.paper}>
-                        <Typography variant="title" id="modal-title">
-                            Type firstName and lastName to customize jokes
-                        </Typography>
-                        <TextField label="FirstName" className={classes.textInput} />
-                        <TextField label="LastName" className={classes.textInput} />
-                        <Button variant="contained" color="default" className={classes.button}>
-                            Update
-                        </Button>
-                    </div>
-                </Modal>
+                    closeHandler={() => this.closeModal()}
+                    submitHandler={props => this.submitModalData(props)}
+                />
             </div>
         );
     }

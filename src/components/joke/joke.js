@@ -34,7 +34,7 @@ class Joke extends React.PureComponent {
                     <LoadingInfo
                         className={classes.alignCenter}
                         status={loading}
-                        availableText={text}
+                        availableJoke={text}
                     />
                     <h1 className={classes.alignCenter}>
                         {text}
