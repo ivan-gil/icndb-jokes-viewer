@@ -4,7 +4,7 @@
   "description": "react app on express server using webpack 4/redux/SSR",
   "main": "index.js",
   "scripts": {
-    "express": "webpack --mode=development && node ./src/server.js",
+    "express": "webpack --mode=production && node ./src/server.js",
     "dev": "webpack-dev-server --mode=development --hot --inline",
     "build:prod": "webpack --mode=production",
     "build:dev": "webpack --mode=development",

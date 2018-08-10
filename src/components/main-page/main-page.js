@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+// Material UI components
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Modal from '@material-ui/core/Modal';
@@ -7,6 +9,12 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Icon from '@material-ui/core/Icon';
 import Typography from '@material-ui/core/Typography';
+
+// Components
+import Joke from '../joke/joke';
+
+// Services
+import JokeService from '../../services/icndb-service';
 
 const styles = theme => ({
     root: {
@@ -16,10 +24,6 @@ const styles = theme => ({
     },
     settingsBtn: {
         alignSelf: 'flex-end',
-    },
-    joke: {
-        alignSelf: 'center',
-        margin: 'auto 0',
     },
     paper: {
         position: 'absolute',
@@ -41,7 +45,20 @@ class MainPage extends React.Component {
         super(props);
         this.state = {
             open: false,
+            joke: '',
+            loadingJoke: true,
+            firstName: 'Chuck',
+            lastName: 'Norris',
         };
+    }
+
+    componentDidMount() {
+        const { firstName, lastName } = this.state;
+        JokeService.getRandomJoke(firstName, lastName)
+            .then(joke => this.setState({
+                joke,
+                loadingJoke: false,
+            }));
     }
 
     handleOpen() {
@@ -54,16 +71,14 @@ class MainPage extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const { open } = this.state;
+        const { open, joke, loadingJoke } = this.state;
 
         return (
             <div className={classes.root}>
                 <IconButton className={classes.settingsBtn} onClick={() => this.handleOpen()}>
                     <Icon className={classes.icon}>settings</Icon>
                 </IconButton>
-                <h1 className={classes.joke}>
-                    Chuck Norris uses ribbed condoms inside out, so he gets the pleasure.
-                </h1>
+                <Joke text={joke} loading={loadingJoke} />
                 <Modal
                     open={open}
                     onClose={() => this.handleClose()}

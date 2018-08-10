@@ -28,22 +28,22 @@ const sendRequest = (requestURL) => {
         .catch(commonCatch);
 };
 
-/**
- * @description Returns random joke from ICNDB service
- * @param {string} requestURL url string with parameters
- * @param {string} [firstName=''] firstName that you want to see in a joke
- * @param {string} [lastName=''] lastName that you want to see in a joke
- * @returns {Promise} return promise that can return { status } or { status, value }
- */
+const JokeService = {
+    /**
+     * @description Returns random joke from ICNDB service
+     * @param {string} requestURL url string with parameters
+     * @param {string} [firstName=''] firstName that you want to see in a joke
+     * @param {string} [lastName=''] lastName that you want to see in a joke
+     * @returns {Promise} return promise that can return { status } or { status, value }
+    */
 
-function getRandomJoke(firstName = '', lastName = '') {
-    const completedURL = `http://api.icndb.com/jokes/random?firstName=${firstName}&lastName=${lastName}`;
-    const request = new Request(completedURL);
+    getRandomJoke(firstName = '', lastName = '') {
+        const completedURL = `http://api.icndb.com/jokes/random?firstName=${firstName}&lastName=${lastName}&escape=javascript`;
+        const request = new Request(completedURL);
 
-    return sendRequest(request)
-        .then(({ value }) => value.joke);
-}
-
-export default {
-    getRandomJoke,
+        return sendRequest(request)
+            .then(({ value }) => value.joke);
+    },
 };
+
+export default JokeService;
