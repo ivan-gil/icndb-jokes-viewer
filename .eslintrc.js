@@ -43,5 +43,14 @@ module.exports = {
         "react/jsx-one-expression-per-line": "off",
         "react/prefer-stateless-function": "off",
         "react/jsx-indent-props": "off",
+        "jsx-a11y/click-events-have-key-events": "off",
+        'jsx-a11y/no-static-element-interactions': [
+            'warn',
+            {
+                handlers: [
+                    'onClick',
+                ],
+            },
+        ],
     },
 };

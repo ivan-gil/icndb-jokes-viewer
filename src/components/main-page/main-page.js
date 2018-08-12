@@ -91,6 +91,14 @@ class MainPage extends React.Component {
         }));
     }
 
+    updateJoke() {
+        const { open } = this.state;
+
+        if (!open) {
+            this.getJoke();
+        }
+    }
+
     openModal(event) {
         this.setState({ open: true });
         event.stopPropagation();
@@ -114,7 +122,7 @@ class MainPage extends React.Component {
         const { open, joke, loadingJoke } = this.state;
 
         return (
-            <div className={classes.root}>
+            <div className={classes.root} onClick={() => this.updateJoke()}>
                 <IconButton className={classes.settingsBtn} onClick={e => this.openModal(e)}>
                     <Icon className={classes.icon}>settings</Icon>
                 </IconButton>
