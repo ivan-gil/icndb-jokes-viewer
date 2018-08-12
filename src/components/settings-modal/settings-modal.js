@@ -28,22 +28,26 @@ const styles = theme => ({
 class SettingsModal extends React.Component {
     constructor(props) {
         super(props);
-        this.lastNameInput = React.createRef();
-        this.firstNameInput = React.createRef();
         this.state = {
             firstName: '',
             lastName: '',
+            isValid: true,
         };
     }
 
     onSubmit(stateHandler) {
         const { firstName, lastName } = this.state;
 
-        stateHandler({
-            firstName,
-            lastName,
-            open: false,
-        });
+        if (!firstName || !lastName) {
+            this.setState({ isValid: false });
+        } else {
+            this.clearState();
+            stateHandler({
+                firstName,
+                lastName,
+                open: false,
+            });
+        }
     }
 
     handleFirstName(event) {
@@ -54,6 +58,19 @@ class SettingsModal extends React.Component {
         this.setState({ lastName: event.target.value });
     }
 
+    closeModal(handleClose) {
+        handleClose();
+        this.clearState();
+    }
+
+    clearState() {
+        this.setState({
+            isValid: true,
+            firstName: '',
+            lastName: '',
+        });
+    }
+
     render() {
         const {
             classes,
@@ -61,17 +78,25 @@ class SettingsModal extends React.Component {
             submitHandler,
             open,
         } = this.props;
-        const { firstName, lastName } = this.state;
+        const { firstName, lastName, isValid } = this.state;
 
         return (
             <Modal
+                disableAutoFocus
                 open={open}
-                onClose={closeHandler}
+                onClose={() => this.closeModal(closeHandler)}
             >
                 <div className={classes.paper}>
-                    <Typography variant="title" id="modal-title">
+                    <Typography variant="title">
                         Type firstName and lastName to customize jokes
                     </Typography>
+                    {
+                        !isValid ? (
+                            <Typography variant="subheading" color="error">
+                                Error. You should enter both firstName and lastName
+                            </Typography>
+                        ) : false
+                    }
                     <TextField
                         onChange={e => this.handleFirstName(e)}
                         label="FirstName"

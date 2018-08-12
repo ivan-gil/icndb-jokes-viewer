@@ -34,7 +34,7 @@ const JokeService = {
      * @param {string} requestURL url string with parameters
      * @param {string} [firstName=''] firstName that you want to see in a joke
      * @param {string} [lastName=''] lastName that you want to see in a joke
-     * @returns {Promise} return promise that can return { status } or { status, value }
+     * @returns {Promise} return promise that return { id, value }
     */
 
     getRandomJoke(firstName = '', lastName = '') {
@@ -42,7 +42,30 @@ const JokeService = {
         const request = new Request(completedURL);
 
         return sendRequest(request)
-            .then(({ value }) => value.joke);
+            .then(({ value }) => ({
+                value: value.joke,
+                id: value.id,
+            }));
+    },
+
+    /**
+     * @description Returns joke by identificator from ICNDB service
+     * @param {string} requestURL url string with parameters
+     * @param {number} id joke id
+     * @param {string} [firstName=''] firstName that you want to see in a joke
+     * @param {string} [lastName=''] lastName that you want to see in a joke
+     * @returns {Promise} return promise that return { id, value }
+    */
+
+    getJokeById(id, firstName = '', lastName = '') {
+        const completedURL = `http://api.icndb.com/jokes/${id}?firstName=${firstName}&lastName=${lastName}&escape=javascript`;
+        const request = new Request(completedURL);
+
+        return sendRequest(request)
+            .then(({ value }) => ({
+                value: value.joke,
+                id: value.id,
+            }));
     },
 };
 

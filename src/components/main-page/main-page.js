@@ -14,7 +14,7 @@ import SettingsModal from '../settings-modal/settings-modal';
 import JokeService from '../../services/icndb-service';
 
 // Helpers
-import storageAvailable from '../../helpers/common-helpers';
+import Helpers from '../../helpers/common-helpers';
 
 const styles = theme => ({
     root: {
@@ -46,14 +46,17 @@ class MainPage extends React.Component {
         let firstName;
         let lastName;
 
-        if (storageAvailable('localStorage')) {
+        if (Helpers.storageAvailable('localStorage')) {
             firstName = localStorage.getItem('firstName');
             lastName = localStorage.getItem('lastName');
         }
 
         this.state = {
             open: false,
-            joke: '',
+            joke: {
+                id: null,
+                value: '',
+            },
             loadingJoke: true,
             firstName: firstName || 'Chuck',
             lastName: lastName || 'Norris',
@@ -69,8 +72,28 @@ class MainPage extends React.Component {
             }));
     }
 
-    openModal() {
+    componentDidUpdate(prevProps, { firstName: prevFirstName, lastName: prevLastName }) {
+        const { firstName, lastName, joke } = this.state;
+
+        if (firstName !== prevFirstName || lastName !== prevLastName) {
+            this.getJoke(joke.id);
+        }
+    }
+
+    getJoke(jokeId) {
+        const { firstName, lastName } = this.state;
+        const promise = jokeId ? JokeService.getJokeById(jokeId, firstName, lastName)
+            : JokeService.getRandomJoke(firstName, lastName);
+
+        promise.then(joke => this.setState({
+            joke,
+            loadingJoke: false,
+        }));
+    }
+
+    openModal(event) {
         this.setState({ open: true });
+        event.stopPropagation();
     }
 
     closeModal() {
@@ -78,7 +101,7 @@ class MainPage extends React.Component {
     }
 
     submitModalData(props) {
-        if (storageAvailable('localStorage')) {
+        if (Helpers.storageAvailable('localStorage')) {
             localStorage.setItem('firstName', props.firstName);
             localStorage.setItem('lastName', props.lastName);
         }
@@ -92,10 +115,10 @@ class MainPage extends React.Component {
 
         return (
             <div className={classes.root}>
-                <IconButton className={classes.settingsBtn} onClick={() => this.openModal()}>
+                <IconButton className={classes.settingsBtn} onClick={e => this.openModal(e)}>
                     <Icon className={classes.icon}>settings</Icon>
                 </IconButton>
-                <Joke text={joke} loading={loadingJoke} />
+                <Joke text={joke.value} loading={loadingJoke} />
                 <SettingsModal
                     open={open}
                     closeHandler={() => this.closeModal()}

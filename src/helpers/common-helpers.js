@@ -17,4 +17,6 @@ const storageAvailable = (type) => {
     }
 };
 
-export default storageAvailable;
+export default {
+    storageAvailable,
+};
